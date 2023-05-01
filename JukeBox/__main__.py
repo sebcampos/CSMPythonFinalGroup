@@ -59,6 +59,8 @@ class Jukebox:
                     self._current_song = timer
                     time.sleep(1)
                     total_seconds -= 1
+                    if total_seconds <= 0:
+                        self._current_song = None
                     if stop_threads:
                         return
 
