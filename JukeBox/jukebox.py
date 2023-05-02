@@ -288,7 +288,7 @@ class Library(LinkedList):
 
 
 class SongSerializerAdapter:
-    """"""
+
     def __init__(self, serializer):
         self.serializer = serializer
 
@@ -298,6 +298,10 @@ class SongSerializerAdapter:
 
 # Adapter pattern
 class HtmlAdapter:
+    """
+    The HtmlAdapter ...
+    """
+
     def __init__(self, song_list):
         self.song_list = song_list
 
@@ -326,6 +330,12 @@ class HtmlAdapter:
 
 # State pattern
 class Jukebox:
+    """
+    The JukeBox implements the Adapter, Factory, and Iterator into one program.
+    This program also includes the State pattern by allowing users to play a song
+    only when they have inserted a coin and by maintaining a queue of songs to play,
+    removing them as they complete.
+    """
     lib = Library()
     _state: str = 'standby' or 'coin_inserted' or 'playing' or 'quit'
     _current_song: Song = None
