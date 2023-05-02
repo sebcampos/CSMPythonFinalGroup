@@ -15,7 +15,7 @@ from os import system, name
 from queue import Queue
 from library import Library, Song
 from threading import Thread
-
+from adapter import HtmlAdapter
 
 class Jukebox:
     lib = Library()
@@ -29,6 +29,7 @@ class Jukebox:
 
         # adding songs to lib
         self.lib.build_library()
+        self.adapter = HtmlAdapter(tuple(n.song for n in self.lib))
         self.thread = Thread(target=self._state_monitor)
         self.thread.start()
 
@@ -132,9 +133,12 @@ class Jukebox:
                 selection = None
 
             elif selection == 'd':
-                print(self.lib.serialize('xml'))
-                print(self.lib.serialize('json'))
+                print('html file written "songs-adapter.html"')
                 selection = None
+                html = self.adapter.to_html()
+                with open('songs-adapter.html', 'w') as f:
+                    f.write(html)
+
 
 
 

@@ -2,7 +2,6 @@ import time
 import uuid
 from json import dumps
 import xml.etree.ElementTree as et
-from typing import Self
 
 
 class SongSerializer:
@@ -69,7 +68,7 @@ class Song:
         """
         return SongSerializerFactory(serializer_type=s_format).serialize(self)
 
-    def __eq__(self, other: Self):
+    def __eq__(self, other: object):
         equal = True
         for key, item in self.__dict__.items():
             if other.__dict__.get(key) != item:

@@ -1,15 +1,14 @@
 from song import Song
-from typing import Self
 
 
 class Node:
-    _next: Self or None = None
+    _next: object or None = None
     _song: Song
 
-    def __init__(self, song: Self):
+    def __init__(self, song: object):
         self._song = song
 
-    def __eq__(self, other: Self or Song):
+    def __eq__(self, other: object or Song):
         if other.__dict__.get('song'):
             return self.song == other.song
         return self.song == other
@@ -79,6 +78,10 @@ class Library(LinkedList):
         self.add(Song("Marriage of Figaro", "Mozart", "4:00"))
         self.add(Song("Mayonakano Door", "Tanaka Yuri", "5:10"))
         self.add(Song("Rasputin", "Boney M.", "5:50"))
+        self.add(Song("Coffee Cold", "Galt MacDermot", "4:01"))
+        self.add(Song("Shark Smile", "Big Thief", "3:58"))
+        self.add(Song("Here Goes Something", "Nada Surf", "2:06"))
+        self.add(Song("XXX", "Wand", "5:18"))
 
     def get(self, index) -> Node:
         if index < 0 or index > self._size:
