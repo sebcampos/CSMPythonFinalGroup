@@ -22,11 +22,15 @@ from threading import Thread
 
 # Factory Method Pattern
 class SongSerializer:
+    """Serializer Base class to be implemented"""
+
     def serialize(self, song):
         raise NotImplementedError('serialize method not implemented')
 
 
 class JsonSerializer(SongSerializer):
+    """Json song serializer implements the serialize method to return json formatted song"""
+
     def serialize(self, song):
         payload = {
             'id': song.song_id,
@@ -37,6 +41,8 @@ class JsonSerializer(SongSerializer):
 
 
 class XmlSerializer(SongSerializer):
+    """Xml song serializer implements the serialize method to return xml formatted song"""
+
     def serialize(self, song):
         song_info = et.Element('song', attrib={'id': song.song_id})
         title = et.SubElement(song_info, 'title')
@@ -47,6 +53,11 @@ class XmlSerializer(SongSerializer):
 
 
 class SongSerializerFactory:
+    """
+    This class is an example of the factory method. It builds new instances
+    of the serializer classes and returns those instance to the program
+    using the get_serializer method
+    """
     serializer_options: tuple = ('json', 'xml')
 
     def __new__(cls, *args, **kwargs) -> SongSerializer:
@@ -66,8 +77,12 @@ class SongSerializerFactory:
         else:
             raise ValueError('Unsupported serializer type: %s' % serializer_type)
 
+
 class Song:
-    _string: str
+    """
+    The song class is a representation of a Song to be used in the JukeBox
+    and Library classes
+    """
 
     def __init__(self, title, artist, duration):
         self.song_id = str(uuid.uuid4())
@@ -78,12 +93,6 @@ class Song:
         self.minutes, self.seconds = int(minutes), int(seconds)
         self.total_seconds = int(self.minutes) * 60 + int(self.seconds)
 
-    def serialize(self, s_format: str) -> str:
-        """
-        :param s_format: desired format either json or xml
-        """
-        return SongSerializerFactory(serializer_type=s_format).serialize(self)
-
     def __eq__(self, other: object):
         equal = True
         for key, item in self.__dict__.items():
@@ -91,25 +100,21 @@ class Song:
                 equal = False
         return equal
 
-    # def __str__(self) -> str:
-    #     # building string table representation
-    #     self._string = "{:>20} {:>20} {:>20}\n" \
-    #         .format('Title', 'Artist', 'Duration')
-    #     self._string += "{:>20} {:>20} {:>20}\n" \
-    #         .format(self.title, self.artist, str(self.minutes)+":"+str(self.seconds))
-    #     return self._string
-
-
     def __repr__(self) -> str:
         string = f'Song(song_id={self.song_id}, title="{self.title}", artist="{self.artist}")\n\n'
         return string
-    
+
+
 # Iterator Pattern
 class Node:
+    """
+    The node is part of our LinkedList / Iterator implementation
+    and represents one item in the LinkedList
+    """
     _next: object or None = None
     _song: Song
 
-    def __init__(self, song: object):
+    def __init__(self, song: Song):
         self._song = song
 
     def __eq__(self, other: object or Song):
@@ -137,6 +142,10 @@ class Node:
 
 
 class DummyNode:
+    """
+    The Dummy Node is used in our program and the Head Node of
+    the linked list
+    """
     _next: Node or None
 
     def __init__(self):
@@ -153,6 +162,11 @@ class DummyNode:
 
 # Iterator and Chain of Responsibility patterns
 class LinkedList:
+    """
+    The linked list class is a representation of our Iterator.
+    It builds the basic LinkedList using the Node class by implementing
+    the iter and next methods.
+    """
     _root: DummyNode
     _current_node: Node or DummyNode
 
@@ -173,6 +187,11 @@ class LinkedList:
 
 # Factory Method pattern
 class Library(LinkedList):
+    """
+    The Library class inherits from the linked list and adds the abilities
+    to add, remove, and search for nodes with a particular song value or index.
+    It also builds a hard coded Library of Songs in the init method.
+    """
     _size = 0
 
     @property
@@ -259,7 +278,7 @@ class Library(LinkedList):
 
     def __str__(self):
         string = "Playlist:\n"
-        string += "{:>20} {:>20} {:>20}\n"\
+        string += "{:>20} {:>20} {:>20}\n" \
             .format('Number', 'Title', 'Artist')
         for i, node in enumerate(self):
             song = node.song
@@ -267,15 +286,9 @@ class Library(LinkedList):
                 .format(str(i), song.title, song.artist)
         return string
 
-    def serialize(self, format):
-        if format == 'json':
-            return '{"playlist" :[\n\t' + ',\n\t'.join(node.song.serialize(format) for node in self) + '\n]}'
-        if format == 'xml':
-            return '<playlist>\n\t' + '\n\t'.join(node.song.serialize(format) for node in self) + '\n</playlist>'
-
-
 
 class SongSerializerAdapter:
+    """"""
     def __init__(self, serializer):
         self.serializer = serializer
 
@@ -287,7 +300,6 @@ class SongSerializerAdapter:
 class HtmlAdapter:
     def __init__(self, song_list):
         self.song_list = song_list
-        
 
     def to_html(self):
         song_html = ""
@@ -310,6 +322,7 @@ class HtmlAdapter:
                f'</html>'
 
         return html
+
 
 # State pattern
 class Jukebox:
@@ -441,7 +454,6 @@ class Jukebox:
                 self.thread.join()
                 print("Thank you and goodbye!")
                 return
-
 
 
 if __name__ == '__main__':
