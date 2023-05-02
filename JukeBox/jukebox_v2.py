@@ -333,7 +333,9 @@ class Jukebox:
 
     @staticmethod
     def clear():
-
+        global clear_screen
+        if clear_screen is False:
+            return
         # for windows
         if name == 'nt':
             _ = system('cls')
@@ -456,5 +458,6 @@ class Playlist:
 
 if __name__ == '__main__':
     stop_threads = False
+    clear_screen = False
     jukebox = Jukebox()
     jukebox.interface()
