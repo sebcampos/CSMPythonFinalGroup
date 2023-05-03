@@ -20,6 +20,7 @@ import xml.etree.ElementTree as et
 from threading import Thread
 
 
+### Creational ###
 # Factory Method Pattern
 class SongSerializer:
     """Serializer Base class to be implemented"""
@@ -105,6 +106,7 @@ class Song:
         return string
 
 
+### Structural ###
 # Iterator Pattern
 class Node:
     """
@@ -299,7 +301,8 @@ class SongSerializerAdapter:
 # Adapter pattern
 class HtmlAdapter:
     """
-    The HtmlAdapter ...
+    The HtmlAdapter serializes the song from our Library and adapts
+    them into an html page
     """
 
     def __init__(self, song_list):
@@ -318,7 +321,7 @@ class HtmlAdapter:
                          f'<h2>{song.title}</h2>' \
                          f'<h3>{song.artist}</h3>' \
                          f'<p class="json">{json_payload}</p>' \
-                         f'<p class="xml"><!--\n{xml_payload}\n--></p>' \
+                         f'<p class="xml">\n{xml_payload.replace(">", "&gt").replace("<", "&lt")}\n</p>' \
                          f'</div>'
         html = f'<html>' \
                f'<head><title>Songs</title></head>' \
@@ -328,6 +331,7 @@ class HtmlAdapter:
         return html
 
 
+### Behavioral ###
 # State pattern
 class Jukebox:
     """
@@ -458,6 +462,13 @@ class Jukebox:
                 html = self.adapter.to_html()
                 with open('songs-adapter.html', 'w') as f:
                     f.write(html)
+                # for windows
+                if name == 'nt':
+                    _ = system('start songs-adapter.html')
+
+                # for mac and linux(here, os.name is 'posix')
+                else:
+                    _ = system('open songs-adapter.html')
 
 
             elif selection == 'q':
